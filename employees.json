@@ -1,0 +1,77 @@
+[
+    {
+        "id": "1",
+        "name": "Sourav",
+        "department": "Development",
+        "position": "Junior SQL",
+        "hireDate": "2026-01-02"
+    },
+    {
+        "id": "2",
+        "employee name": "abc",
+        "department": "xyz",
+        "hireDate": "2026-01-02",
+        "position": "sales",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile number": "1234567892",
+        "Permanant Address": "Mumbai",
+        "employee type": "Part time"
+    },
+    {
+        "id": "3",
+        "employee name": "abc",
+        "department": "xyz",
+        "hireDate": "2026-01-15",
+        "position": "sales",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile number": "1234567892",
+        "Permanant Address": "Mumbai",
+        "employee type": "Part time"
+    },
+    {
+        "id": "4",
+        "employee name": "xyz",
+        "department": "abc",
+        "hireDate": "2026-01-08",
+        "position": "mmn",
+        "email": "xyz@gmail.com",
+        "mobile number": "8983",
+        "Permanant Address": "pune",
+        "employee type": "Part time"
+    },
+    {
+        "id": "5",
+        "employee name": "abc",
+        "department": "HR",
+        "hireDate": "2026-01-01",
+        "position": "H",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile number": "1234567892",
+        "Permanant Address": "Mumbai",
+        "employee type": "Part-time"
+    },
+    {
+        "id": "6",
+        "employee_name": "abv",
+        "department": "HR",
+        "position": "n",
+        "hire_date": "2026-01-08",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile_number": "1234567890",
+        "permanent_address": "pune",
+        "employee_type": "Full-time",
+        "isactive": "1"
+    },
+    {
+        "id": "7",
+        "employee_name": "abv",
+        "department": "HR",
+        "position": "n",
+        "hire_date": "2026-01-08",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile_number": "1234567890",
+        "permanent_address": "pune",
+        "employee_type": "Part-time",
+        "isactive": ""
+    }
+]

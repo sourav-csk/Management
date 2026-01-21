@@ -59,6 +59,7 @@ class EmployeeHandler(http.server.SimpleHTTPRequestHandler):
     <input type="email" name="email" placeholder="Email" required><br>
     <input type="text" name="mobile_number" placeholder="Mobile Number" required><br>
     <input type="text" name="permanent_address" placeholder="Permanent Address" required><br>
+    <input type="text" name="nationality" placeholder="Nationality" required><br>
     <input type="text" name="employee_type" placeholder="Full-time / Part-time / Contract" required><br>
     <input type="checkbox" name="isactive" value="1"> IsActive <br>
     <button type="submit">Add Employee</button>
@@ -99,6 +100,7 @@ fetch('/employees')
             email = data.get('email', [''])[0]
             mobile = data.get('mobile_number', [''])[0]
             address = data.get('permanent_address', [''])[0]
+            nationality = data.get('nationality', [''])[0]
             employee_type = data.get('employee_type', [''])[0]
             isactive = data.get('isactive', [''])[0]
 
@@ -120,7 +122,8 @@ fetch('/employees')
                 self.send_error(400, "Invalid employee type")
                 return
 
-            if isactive not in ['0', '1', '']:
+            if isactive not in ['1','']:   # Checkbox can be '1' or not present
+                     
                 self.send_error(400, "Invalid isactive value")
                 return
 
@@ -135,8 +138,9 @@ fetch('/employees')
                 "email": email,
                 "mobile_number": mobile,
                 "permanent_address": address,
+                "nationality": nationality,
                 "employee_type": employee_type,
-                "isactive": isactive
+                "isactive": isactive,
             })
 
             save_employees()

@@ -73,5 +73,17 @@
         "permanent_address": "pune",
         "employee_type": "Part-time",
         "isactive": ""
+    },
+    {
+        "id": "8",
+        "employee_name": "abv",
+        "department": "HR",
+        "position": "n",
+        "hire_date": "2026-01-08",
+        "email": "manjrekar10.yash@gmail.com",
+        "mobile_number": "1234567890",
+        "permanent_address": "pune",
+        "employee_type": "Part-time",
+        "isactive": ""
     }
 ]

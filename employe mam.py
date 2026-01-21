@@ -7,8 +7,7 @@ PORT = 8000
 DATA_FILE = 'employees.json'
 employees = []
 
-
-#n ------------------ DATA HANDLING ------------------
+# ------------------ DATA HANDLING ------------------
 
 def load_employees():
     global employees
@@ -18,17 +17,17 @@ def load_employees():
     else:
         employees = []
 
-
 def save_employees():
     with open(DATA_FILE, 'w') as f:
         json.dump(employees, f, indent=4)
-
 
 # ------------------ HTTP HANDLER ------------------
 
 class EmployeeHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
+
+        # -------- HOME PAGE (ADD EMPLOYEE) --------
         if self.path == '/':
 
             self.send_response(200)
@@ -39,57 +38,96 @@ class EmployeeHandler(http.server.SimpleHTTPRequestHandler):
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Management System</title>
+    <title>Employee Management</title>
     <style>
         body { font-family: Arial; margin: 40px; }
         input, button { padding: 8px; margin: 5px; width: 250px; }
         button { background: green; color: white; border: none; cursor: pointer; }
-        pre { background: #f4f4f4; padding: 15px; }
     </style>
 </head>
 <body>
 
-<h1>Employee Management System</h1>
+<h1>Add Employee</h1>
 
 <form method="POST" action="/employees">
     <input type="text" name="employee_name" placeholder="Employee Name" required><br>
-    <input type="text" name="department" placeholder="Department (HR, Engineering)" required><br>
+    <input type="text" name="department" placeholder="HR / Engineering / Sales / Marketing" required><br>
     <input type="text" name="position" placeholder="Position" required><br>
     <input type="date" name="hire_date" required><br>
     <input type="email" name="email" placeholder="Email" required><br>
-    <input type="text" name="mobile_number" placeholder="Mobile Number" required><br>
-    <input type="text" name="permanent_address" placeholder="Permanent Address" required><br>
+    <input type="text" name="mobile_number" placeholder="10 Digit Mobile" required><br>
+    <input type="text" name="permanent_address" placeholder="Address" required><br>
     <input type="text" name="nationality" placeholder="Nationality" required><br>
     <input type="text" name="employee_type" placeholder="Full-time / Part-time / Contract" required><br>
-    <input type="checkbox" name="isactive" value="1"> IsActive <br>
+    <input type="checkbox" name="isactive" value="1"> Is Active <br><br>
     <button type="submit">Add Employee</button>
 </form>
-
-<h2>Employees Data</h2>
-<pre id="data"></pre>
-
-<script>
-fetch('/employees')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('data').innerText =
-      JSON.stringify(data, null, 2);
-  });
-</script>
 
 </body>
 </html>
 """
             self.wfile.write(html.encode())
 
+        # -------- EMPLOYEES LIST PAGE --------
         elif self.path == '/employees':
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps(employees).encode())
 
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            rows = ""
+            for emp in employees:
+                rows += f"""
+                <tr>
+                    <td>{emp['id']}</td>
+                    <td>{emp['employee_name']}</td>
+                    <td>{emp['department']}</td>
+                    <td>{emp['position']}</td>
+                    <td>{emp['email']}</td>
+                    <td>{'Yes' if emp['isactive'] == '1' else 'No'}</td>
+                </tr>
+                """
+
+            html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees List</title>
+    <style>
+        body {{ font-family: Arial; margin: 40px; }}
+        table {{ border-collapse: collapse; width: 90%; }}
+        th, td {{ border: 1px solid #333; padding: 8px; text-align: left; }}
+        th {{ background: #f2f2f2; }}
+        a {{ display: inline-block; margin-top: 20px; }}
+    </style>
+</head>
+<body>
+
+<h1>Employees List</h1>
+
+<table>
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Position</th>
+    <th>Email</th>
+    <th>Active</th>
+</tr>
+{rows}
+</table>
+
+<a href="/">⬅ Add New Employee</a>
+
+</body>
+</html>
+"""
+            self.wfile.write(html.encode())
+
+    # -------- SAVE EMPLOYEE --------
     def do_POST(self):
         if self.path == '/employees':
+
             length = int(self.headers['Content-Length'])
             data = urllib.parse.parse_qs(self.rfile.read(length).decode())
 
@@ -104,31 +142,24 @@ fetch('/employees')
             employee_type = data.get('employee_type', [''])[0]
             isactive = data.get('isactive', [''])[0]
 
-            # ---------- VALIDATIONS ----------
-
+            # -------- VALIDATION --------
             if department not in ['HR', 'Engineering', 'Sales', 'Marketing']:
-                self.send_error(400, "Invalid department")
+                self.send_error(400, "Invalid Department")
                 return
 
-            if '@' not in email or '.' not in email:
-                self.send_error(400, "Invalid email address")
+            if '@' not in email:
+                self.send_error(400, "Invalid Email")
                 return
 
             if not mobile.isdigit() or len(mobile) != 10:
-                self.send_error(400, "Invalid mobile number")
+                self.send_error(400, "Invalid Mobile Number")
                 return
 
             if employee_type not in ['Full-time', 'Part-time', 'Contract']:
-                self.send_error(400, "Invalid employee type")
+                self.send_error(400, "Invalid Employee Type")
                 return
 
-            if isactive not in ['1','']:   # Checkbox can be '1' or not present
-                     
-                self.send_error(400, "Invalid isactive value")
-                return
-
-            # ---------- SAVE DATA ----------
-
+            # -------- SAVE DATA --------
             employees.append({
                 "id": str(len(employees) + 1),
                 "employee_name": employee_name,
@@ -140,23 +171,22 @@ fetch('/employees')
                 "permanent_address": address,
                 "nationality": nationality,
                 "employee_type": employee_type,
-                "isactive": isactive,
+                "isactive": isactive
             })
 
             save_employees()
 
+            # -------- REDIRECT TO EMPLOYEES PAGE --------
             self.send_response(303)
-            self.send_header('Location', '/')
+            self.send_header('Location', '/employees')
             self.end_headers()
 
-
-
+# ------------------ RUN SERVER ------------------
 
 def run():
     load_employees()
     server = http.server.HTTPServer(('', PORT), EmployeeHandler)
     print(f"Server running at http://localhost:{PORT}")
     server.serve_forever()
-
 
 run()

@@ -8,7 +8,7 @@ DATA_FILE = 'employees.json'
 employees = []
 
 
-
+#n ------------------ DATA HANDLING ------------------
 
 def load_employees():
     global employees

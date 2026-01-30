@@ -62,6 +62,7 @@ class EmployeeHandler(http.server.SimpleHTTPRequestHandler):
     <input type="text" name="nationality" placeholder="Nationality" required><br>
     <input type="text" name="employee_type" placeholder="Full-time / Part-time / Contract" required><br>
     <input type="checkbox" name="isactive" value="1" > IsActive <br>
+    <input type="text" name="empLastworkingdate" placeholder="Last Working Date"><br>
     <button type="submit">Add Employee</button>
 </form>
 
@@ -103,6 +104,7 @@ fetch('/employees')
             nationality = data.get('nationality', [''])[0]
             employee_type = data.get('employee_type', [''])[0]
             isactive = data.get('isactive', [''])[0]
+            empLastworkingdate = data.get('empLastworkingdate', [''])[0]
 
             # ---------- VALIDATIONS ----------
 
@@ -126,6 +128,13 @@ fetch('/employees')
                      
                 self.send_error(400, "Invalid isactive value")
                 return
+            if empLastworkingdate:
+                try:
+                    from datetime import datetime
+                    datetime.strptime(empLastworkingdate, '%Y-%m-%d')
+                except ValueError:
+                    self.send_error(400, "Invalid last working date format")
+                    return
 
             # ---------- SAVE DATA ----------
 
@@ -141,6 +150,7 @@ fetch('/employees')
                 "nationality": nationality,
                 "employee_type": employee_type,
                 "isactive": isactive,
+                "empLastworkingdate" : empLastworkingdate
             })
 
             save_employees()
